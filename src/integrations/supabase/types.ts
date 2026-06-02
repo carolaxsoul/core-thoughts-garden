@@ -14,7 +14,212 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      articles: {
+        Row: {
+          category: string
+          content: string
+          cover_image: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          is_featured: boolean
+          is_published: boolean
+          slug: string
+          tags: string[]
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          content: string
+          cover_image?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          is_featured?: boolean
+          is_published?: boolean
+          slug: string
+          tags?: string[]
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          content?: string
+          cover_image?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          is_featured?: boolean
+          is_published?: boolean
+          slug?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      daily_brief: {
+        Row: {
+          category: string
+          created_at: string
+          headline: string
+          id: string
+          image_url: string | null
+          published_at: string | null
+          source: string | null
+          summary: string | null
+          url: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          headline: string
+          id?: string
+          image_url?: string | null
+          published_at?: string | null
+          source?: string | null
+          summary?: string | null
+          url?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          headline?: string
+          id?: string
+          image_url?: string | null
+          published_at?: string | null
+          source?: string | null
+          summary?: string | null
+          url?: string | null
+        }
+        Relationships: []
+      }
+      library: {
+        Row: {
+          cover: string | null
+          created_at: string
+          id: string
+          is_public: boolean
+          notes: string | null
+          rating: number | null
+          title: string
+          type: string
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          cover?: string | null
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          notes?: string | null
+          rating?: number | null
+          title: string
+          type: string
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          cover?: string | null
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          notes?: string | null
+          rating?: number | null
+          title?: string
+          type?: string
+          url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      likes: {
+        Row: {
+          created_at: string
+          thought_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          thought_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          thought_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_thought_id_fkey"
+            columns: ["thought_id"]
+            isOneToOne: false
+            referencedRelation: "thoughts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      thoughts: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          image_url: string | null
+          is_public: boolean
+          likes_count: number
+          tags: string[]
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_public?: boolean
+          likes_count?: number
+          tags?: string[]
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          is_public?: boolean
+          likes_count?: number
+          tags?: string[]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
