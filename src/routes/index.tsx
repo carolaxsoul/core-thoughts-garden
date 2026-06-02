@@ -18,12 +18,6 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type Row = {
-  id: string; content: string; tags: string[]; image_url: string | null;
-  likes_count: number; created_at: string; user_id: string;
-  profiles: { display_name: string | null } | null;
-};
-
 function Index() {
   const [thoughts, setThoughts] = useState<Thought[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -31,21 +25,33 @@ function Index() {
   const load = async () => {
     const { data } = await supabase
       .from("thoughts")
-      .select("id, content, tags, image_url, likes_count, created_at, user_id, profiles(display_name)")
+      .select("id, content, tags, image_url, likes_count, created_at, user_id")
       .eq("is_public", true)
       .order("created_at", { ascending: false })
       .limit(50);
-    const rows = (data ?? []) as unknown as Row[];
-    const mapped: Thought[] = rows.map((r) => ({
-      id: r.id,
-      content: r.content,
-      tags: r.tags ?? [],
-      image_url: r.image_url,
-      likes_count: r.likes_count,
-      created_at: r.created_at,
-      author: r.profiles?.display_name ?? "Anon",
-      handle: (r.profiles?.display_name ?? "anon").toLowerCase().replace(/\s+/g, ""),
-    }));
+    const rows = data ?? [];
+    const ids = Array.from(new Set(rows.map((r) => r.user_id)));
+    const profilesMap = new Map<string, string>();
+    if (ids.length) {
+      const { data: profs } = await supabase
+        .from("profiles")
+        .select("id, display_name")
+        .in("id", ids);
+      profs?.forEach((p) => profilesMap.set(p.id, p.display_name ?? "Anon"));
+    }
+    const mapped: Thought[] = rows.map((r) => {
+      const name = profilesMap.get(r.user_id) ?? "Anon";
+      return {
+        id: r.id,
+        content: r.content,
+        tags: r.tags ?? [],
+        image_url: r.image_url,
+        likes_count: r.likes_count,
+        created_at: r.created_at,
+        author: name,
+        handle: name.toLowerCase().replace(/\s+/g, ""),
+      };
+    });
     setThoughts(mapped);
     setLoaded(true);
   };
